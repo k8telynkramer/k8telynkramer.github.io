@@ -1,1 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestie Sleepover Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="time"],
+        select {
+            flex: 1;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="time"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:hover {
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+        }
+
+        .task-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .task-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .task-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .task-meta {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            gap: 12px;
+        }
+
+        .delete-btn {
+            background: #ff6b6b;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .delete-btn:hover {
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding: 0 5px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            margin-top: 30px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Sleepover Planner</h1>
+            <p>Plan the perfect night with your besties</p>
+        </div>
+
+        <div class="card">
+            <div class="stats" id="stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="completedTasks">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">📝 Add Activity</div>
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="What to do?" maxlength="50">
+            </div>
+            <div class="input-group">
+                <select id="categorySelect">
+                    <option value="food">🍕 Food</option>
+                    <option value="games">🎮 Games</option>
+                    <option value="movies">🎬 Movies</option>
+                    <option value="music">🎵 Music</option>
+                    <option value="photos">📸 Photos</option>
+                    <option value="other">⭐ Other</option>
+                </select>
+                <input type="time" id="timeInput">
+                <button onclick="addTask()">Add</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">🎯 Filter</div>
+            <div class="category-tabs">
+                <button class="category-tab active" onclick="filterTasks('all')">All</button>
+                <button class="category-tab" onclick="filterTasks('food')">🍕 Food</button>
+                <button class="category-tab" onclick="filterTasks('games')">🎮 Games</button>
+                <button class="category-tab" onclick="filterTasks('movies')">🎬 Movies</button>
+                <button class="category-tab" onclick="filterTasks('music')">🎵 Music</button>
+                <button class="category-tab" onclick="filterTasks('photos')">📸 Photos</button>
+                <button class="category-tab" onclick="filterTasks('other')">⭐ Other</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">✅ Activities</div>
+            <div id="taskList"></div>
+            <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">🎉</div>
+                <p>No activities yet. Add one to get started!</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Made with 💜 for unforgettable sleepovers</p>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('sleepoverTasks')) || [];
+        let currentFilter = 'all';
+
+        const categoryEmojis = {
+            food: '🍕',
+            games: '🎮',
+            movies: '🎬',
+            music: '🎵',
+            photos: '📸',
+            other: '⭐'
+        };
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const category = document.getElementById('categorySelect').value;
+            const time = document.getElementById('timeInput').value;
+
+            if (input.value.trim()) {
+                tasks.push({
+                    id: Date.now(),
+                    text: input.value.trim(),
+                    category: category,
+                    time: time,
+                    completed: false
+                });
+
+                saveTasks();
+                renderTasks();
+                input.value = '';
+                document.getElementById('timeInput').value = '';
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            saveTasks();
+            renderTasks();
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function filterTasks(category) {
+            currentFilter = category;
+
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            const emptyState = document.getElementById('emptyState');
+
+            let filteredTasks = tasks;
+            if (currentFilter !== 'all') {
+                filteredTasks = tasks.filter(t => t.category === currentFilter);
+            }
+
+            if (filteredTasks.length === 0) {
+                taskList.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                taskList.innerHTML = filteredTasks
+                    .map(task => `
+                        <div class="task-item ${task.completed ? 'completed' : ''}">
+                            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})">
+                            <div class="task-content">
+                                <div class="task-text">${categoryEmojis[task.category]} ${task.text}</div>
+                                <div class="task-meta">
+                                    ${task.time ? `<span>🕐 ${task.time}</span>` : ''}
+                                </div>
+                            </div>
+                            <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                        </div>
+                    `)
+                    .join('');
+            }
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+        }
+
+        function saveTasks() {
+            localStorage.setItem('sleepoverTasks', JSON.stringify(tasks));
+        }
+
+        // Allow Enter key to add task
+        document.getElementById('taskInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Initial render
+        renderTasks();
+    </script>
+</body>
+</html>
+
 # k8telynkramer.github.io
